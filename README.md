@@ -84,6 +84,8 @@ cat data/eda/EDA_REPORT.md
 bash scripts/train/train_swift_lora.sh
 ```
 
+显存实测与全参估算见 `docs/TRAINING_MEMORY.md`。8K LoRA 建议至少预留 12 GiB，8K 全参建议预留 24 GiB。
+
 ms-swift 全参 SFT：
 
 ```bash

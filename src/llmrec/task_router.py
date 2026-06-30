@@ -34,11 +34,20 @@ def infer_output_type(output: str) -> str:
 
 def infer_task_type(prompt: str, output: str = "") -> str:
     text = f"{prompt}\n{output}".lower()
-    if any(k in text for k in ["next item", "下一", "接下来", "推荐", "top-k", "topk", "可能点击"]):
+    source_hints = {
+        "懂推荐": "recommendation",
+        "懂用户": "user_demand_understanding",
+        "懂物料": "material_understanding",
+        "懂世界": "world_knowledge",
+    }
+    for hint, task_type in source_hints.items():
+        if hint in text:
+            return task_type
+    if any(k in text for k in ["next item", "下一", "接下来", "推荐", "目标内容", "top-k", "topk", "可能点击"]):
         return "recommendation"
-    if any(k in text for k in ["用户", "user", "兴趣", "需求", "历史行为", "行为链", "denois", "噪声"]):
+    if any(k in text for k in ["懂用户", "用户", "user", "兴趣", "需求", "历史行为", "交互历史", "行为链", "denois", "噪声"]):
         return "user_demand_understanding"
-    if find_itemic_tokens(text) and any(k in text for k in ["描述", "caption", "内容", "物料", "商品", "视频", "广告", "直播"]):
+    if find_itemic_tokens(text) and any(k in text for k in ["懂物料", "描述", "caption", "内容", "物料", "商品", "视频", "广告", "直播", "主播"]):
         return "material_understanding"
     if find_itemic_tokens(output):
         return "itemic_grounding"
@@ -51,4 +60,3 @@ def infer_task_type(prompt: str, output: str = "") -> str:
 
 def infer_domain(prompt: str, output: str = "", fallback: str = "general") -> str:
     return infer_domain_from_text(f"{prompt}\n{output}", default=fallback)
-

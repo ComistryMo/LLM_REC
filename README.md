@@ -53,11 +53,18 @@ export HF_ENDPOINT=https://hf-mirror.com
 ## 数据处理
 
 ```bash
-python scripts/data/parse_sft.py data/raw/official_sft.jsonl
+python scripts/data/extract_dataset.py data/raw/dataset.tar.gz --output data/raw/official
+python scripts/data/parse_sft.py data/raw/official/*.jsonl \
+  --tokenizer /data/hz/models/OneReason-0.8B-pretrain-competition
+python scripts/data/split_official.py
+python scripts/data/check_format.py \
+  data/processed/train_official_v1.jsonl data/processed/valid_official_v1.jsonl \
+  --max-length 8192
+
+# 正式行为明细开放后再运行以下构造链路
 python scripts/data/parse_behavior.py data/raw/user_behavior.jsonl
 python scripts/data/build_history_sft.py
 python scripts/data/mix_datasets.py
-python scripts/data/check_format.py data/processed/train_mix_v1.jsonl data/processed/valid_mix_v1.jsonl
 ```
 
 ## EDA
@@ -67,7 +74,7 @@ python scripts/eda/eda_report.py
 cat data/eda/EDA_REPORT.md
 ```
 
-报告包含样本量、任务/输出/domain/action 分布、用户序列长度 P50/P90/P99、输入输出长度、itemic token 合法率、热门 token 和异常样本统计。
+报告包含样本量、任务/输出/domain/action 分布、用户序列长度 P50/P90/P99、输入输出长度、itemic token 合法率、热门 token 和异常样本统计。本批官方数据结论见 `docs/OFFICIAL_DATA_EDA.md`。
 
 ## 训练
 
@@ -93,7 +100,7 @@ bash scripts/train/train_llamafactory_lora.sh
 常用覆盖参数：
 
 ```bash
-MAX_LENGTH=4096 LR=1e-4 EPOCHS=1 BATCH_SIZE=1 GRAD_ACCUM=16 bash scripts/train/train_swift_lora.sh
+MAX_LENGTH=8192 LR=1e-4 EPOCHS=1 BATCH_SIZE=1 GRAD_ACCUM=16 bash scripts/train/train_swift_lora.sh
 ```
 
 ## 验证与导出
@@ -112,4 +119,3 @@ python scripts/export/pre_submit_check.py --model-dir outputs/export_swift_lora_
 - SFT 训练默认只学习 assistant 输出，避免模型复述长用户历史。
 - 第一版 baseline 只使用官方 SFT 数据；用户行为构造样本作为第二阶段增量。
 - 当前没有免密 SSH 时，不要把密码写入命令行或脚本。请使用 SSH key、平台终端或手动同步仓库。
-

@@ -14,6 +14,7 @@ outputs/*
 logs/*
 wandb/
 .env
+dataset.tar.gz
 *.safetensors
 *.bin
 *.pt

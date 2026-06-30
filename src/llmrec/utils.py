@@ -5,7 +5,7 @@ import json
 import random
 import re
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Iterator
 
 
 def repo_root_from(path: str | Path) -> Path:
@@ -67,8 +67,7 @@ def _load_simple_yaml(text: str) -> dict[str, Any]:
     return root
 
 
-def read_jsonl(path: str | Path) -> list[dict[str, Any]]:
-    records: list[dict[str, Any]] = []
+def iter_jsonl(path: str | Path) -> Iterator[dict[str, Any]]:
     with Path(path).open("r", encoding="utf-8") as f:
         for lineno, line in enumerate(f, 1):
             line = line.strip()
@@ -78,36 +77,53 @@ def read_jsonl(path: str | Path) -> list[dict[str, Any]]:
                 obj = json.loads(line)
             except json.JSONDecodeError as exc:
                 raise ValueError(f"Invalid JSONL at {path}:{lineno}: {exc}") from exc
-            if not isinstance(obj, dict):
-                raise ValueError(f"JSONL row must be an object at {path}:{lineno}")
-            records.append(obj)
-    return records
+            values = obj if isinstance(obj, list) else [obj]
+            for item_index, value in enumerate(values):
+                if not isinstance(value, dict):
+                    raise ValueError(
+                        f"JSONL value must be an object at {path}:{lineno}[{item_index}]"
+                    )
+                yield value
 
 
-def read_records(path: str | Path) -> list[dict[str, Any]]:
+def read_jsonl(path: str | Path) -> list[dict[str, Any]]:
+    return list(iter_jsonl(path))
+
+
+def iter_records(path: str | Path) -> Iterator[dict[str, Any]]:
     path = Path(path)
     suffix = path.suffix.lower()
     if suffix in {".jsonl", ".jsonlines"}:
-        return read_jsonl(path)
+        yield from iter_jsonl(path)
+        return
     if suffix == ".json":
         with path.open("r", encoding="utf-8") as f:
             data = json.load(f)
         if isinstance(data, list):
-            return [x for x in data if isinstance(x, dict)]
+            yield from (x for x in data if isinstance(x, dict))
+            return
         if isinstance(data, dict):
             for key in ["data", "records", "samples", "items"]:
                 if isinstance(data.get(key), list):
-                    return [x for x in data[key] if isinstance(x, dict)]
-            return [data]
+                    yield from (x for x in data[key] if isinstance(x, dict))
+                    return
+            yield data
+            return
         raise ValueError(f"Unsupported JSON root in {path}")
     if suffix == ".csv":
         with path.open("r", encoding="utf-8-sig", newline="") as f:
-            return list(csv.DictReader(f))
+            yield from csv.DictReader(f)
+        return
     if suffix in {".parquet", ".pq"}:
         import pandas as pd
 
-        return pd.read_parquet(path).to_dict(orient="records")
+        yield from pd.read_parquet(path).to_dict(orient="records")
+        return
     raise ValueError(f"Unsupported input format: {path}")
+
+
+def read_records(path: str | Path) -> list[dict[str, Any]]:
+    return list(iter_records(path))
 
 
 def write_jsonl(records: Iterable[dict[str, Any]], path: str | Path) -> int:

@@ -32,7 +32,8 @@ LOOSE_CODE_RE = re.compile(r"<(?P<prefix>s_)?(?P<level>[abc])_(?P<value>[A-Za-z0
 BEGIN_RE = re.compile(r"<\|(?:video|prod|ad|living|live|sid)_(?:begin|end)\|>")
 SECRET_RE = re.compile(
     r"(?i)("
-    r"password\s*[:=]|passwd\s*[:=]|pwd\s*[:=]|token\s*[:=]|cookie\s*[:=]|"
+    r"password\s*[:=]|passwd\s*[:=]|pwd\s*[:=]|cookie\s*[:=]|"
+    r"token\s*[:=]\s*[\"']?(?!<\|)[A-Za-z0-9_.-]{16,}|bearer\s+[A-Za-z0-9_.-]{16,}|"
     r"secret[_-]?key\s*[:=]|access[_-]?key\s*[:=]|api[_-]?key\s*[:=]|"
     r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----|"
     r"hf_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}"
@@ -91,7 +92,7 @@ def infer_domain_from_text(text: str, default: str = "general") -> str:
         "video": ["video", "短视频", "视频"],
         "product": ["product", "prod", "商品", "购买", "下单"],
         "ad": ["广告", "ad"],
-        "live": ["直播", "live", "living"],
+        "live": ["直播", "主播", "live", "living"],
     }
     hits = {domain for domain, words in keyword_map.items() if any(w in lowered for w in words)}
     if len(hits) == 1:
@@ -107,4 +108,3 @@ def message_text(messages: Iterable[dict]) -> str:
 
 def token_len(text: str) -> int:
     return len((text or "").split())
-

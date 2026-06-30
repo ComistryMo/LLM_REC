@@ -3,10 +3,10 @@ set -euo pipefail
 
 ROOT="${ROOT:-/data/hz/llmrec_competition}"
 MODEL_PATH="${MODEL_PATH:-/data/hz/models/OneReason-0.8B-pretrain-competition}"
-TRAIN_DATA="${TRAIN_DATA:-${ROOT}/data/processed/train_mix_v1.jsonl}"
-VALID_DATA="${VALID_DATA:-${ROOT}/data/processed/valid_mix_v1.jsonl}"
+TRAIN_DATA="${TRAIN_DATA:-${ROOT}/data/processed/train_official_v1.jsonl}"
+VALID_DATA="${VALID_DATA:-${ROOT}/data/processed/valid_official_v1.jsonl}"
 OUTPUT_DIR="${OUTPUT_DIR:-${ROOT}/outputs/swift_lora_v1}"
-MAX_LENGTH="${MAX_LENGTH:-4096}"
+MAX_LENGTH="${MAX_LENGTH:-8192}"
 LR="${LR:-1e-4}"
 EPOCHS="${EPOCHS:-1}"
 BATCH_SIZE="${BATCH_SIZE:-1}"
@@ -41,4 +41,3 @@ if has_arg "--assistant_only_loss"; then ARGS+=(--assistant_only_loss true); fi
 printf 'swift %q ' "${ARGS[@]}" | tee "${ROOT}/logs/train_swift_lora_cmd.log"
 echo
 swift "${ARGS[@]}" 2>&1 | tee "${ROOT}/logs/train_swift_lora.log"
-

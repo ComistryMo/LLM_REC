@@ -46,7 +46,8 @@ def check_records(path: str | Path, max_length: int = 8192) -> dict[str, Any]:
         text = message_text(record.get("messages", []))
         if SECRET_RE.search(text) or SECRET_RE.search(json.dumps(record, ensure_ascii=False)):
             errors.append("secret_like_text")
-        if len(text.split()) > max_length:
+        measured_length = int(record.get("input_len") or 0) + int(record.get("output_len") or 0)
+        if measured_length > max_length or (not measured_length and len(text.split()) > max_length):
             errors.append("too_long")
         if invalid_itemic_fragments(text):
             errors.append("invalid_itemic_fragment")
@@ -64,4 +65,3 @@ def check_records(path: str | Path, max_length: int = 8192) -> dict[str, Any]:
         "bad_examples": bad_examples,
         "ok": not counters,
     }
-

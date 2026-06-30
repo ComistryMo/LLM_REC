@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llmrec-competition"
+version = "0.1.0"
+description = "Kuaishou LLM-Rec competition engineering scaffold for OneReason SFT."
+requires-python = ">=3.10"
+dependencies = [
+  "datasets",
+  "jsonlines",
+  "numpy",
+  "pandas",
+  "polars",
+  "pyarrow",
+  "pyyaml",
+  "scikit-learn",
+  "tqdm",
+]
+
+[project.optional-dependencies]
+train = [
+  "accelerate",
+  "huggingface_hub",
+  "modelscope",
+  "ms-swift==4.3.2",
+  "peft",
+  "protobuf",
+  "safetensors",
+  "sentencepiece",
+  "tensorboard",
+  "torch",
+  "transformers==5.3.0",
+  "trl",
+]
+dev = ["pytest", "ruff"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+

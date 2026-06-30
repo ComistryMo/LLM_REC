@@ -1,0 +1,7 @@
+{"user_id":"u1","timestamp":"2026-06-01T10:00:00","action_type":"watch","domain":"video","itemic_pattern":"<|video_begin|><s_a_12><s_b_34><s_c_56>"}
+{"user_id":"u1","timestamp":"2026-06-01T10:05:00","action_type":"search","domain":"general","query":"露营装备"}
+{"user_id":"u1","timestamp":"2026-06-01T10:10:00","action_type":"click","domain":"product","itemic_pattern":"<|prod_begin|><s_a_101><s_b_202><s_c_303>"}
+{"user_id":"u1","timestamp":"2026-06-01T10:15:00","action_type":"purchase","domain":"product","itemic_pattern":"<|prod_begin|><s_a_404><s_b_505><s_c_606>"}
+{"user_id":"u2","timestamp":"2026-06-02T09:00:00","action_type":"long_watch","domain":"live","itemic_pattern":"<|living_begin|><s_a_1><s_b_2><s_c_3>"}
+{"user_id":"u2","timestamp":"2026-06-02T09:20:00","action_type":"click","domain":"ad","itemic_pattern":"<|ad_begin|><s_a_7><s_b_8><s_c_9>"}
+

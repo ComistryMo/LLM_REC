@@ -1,0 +1,31 @@
+{
+  "llamafactory_mix_v1_train": {
+    "file_name": "llamafactory_mix_v1_train_sharegpt.jsonl",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "conversations"
+    },
+    "tags": {
+      "role_tag": "from",
+      "content_tag": "value",
+      "user_tag": "human",
+      "assistant_tag": "gpt",
+      "system_tag": "system"
+    }
+  },
+  "llamafactory_mix_v1_valid": {
+    "file_name": "llamafactory_mix_v1_valid_sharegpt.jsonl",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "conversations"
+    },
+    "tags": {
+      "role_tag": "from",
+      "content_tag": "value",
+      "user_tag": "human",
+      "assistant_tag": "gpt",
+      "system_tag": "system"
+    }
+  }
+}
+

@@ -1,0 +1,9 @@
+aliases:
+  user_id: [user_id, uid, user, userid]
+  timestamp: [timestamp, time, ts, event_time, datetime]
+  action_type: [action_type, action, event, behavior, type]
+  domain: [domain, item_domain, scene, biz_type]
+  itemic_pattern: [itemic_pattern, itemic, itemic_token, item_token, item]
+  query: [query, search_query, keyword, text]
+  item_id: [item_id, photo_id, product_id, ad_id, live_id]
+

@@ -1,0 +1,4 @@
+{"id":"sample-material-1","messages":[{"role":"user","content":"请描述物料 <|video_begin|><s_a_1234><s_b_5678><s_c_9012> 的内容类型。"},{"role":"assistant","content":"该物料可能是一个短视频内容，描述应聚焦类目、场景、风格和用户兴趣，不应臆造无法从 itemic token 确认的细节。"}],"task_type":"material_understanding","domain":"video"}
+{"id":"sample-world-1","instruction":"CAP 定理是什么意思？","output":"CAP 定理指出，分布式系统无法同时完全满足一致性、可用性和分区容错性。"}
+{"id":"sample-rec-1","prompt":"用户历史行为：[watch] <|video_begin|><s_a_12><s_b_34><s_c_56>\n[search] 露营装备\n请只输出一个可能感兴趣的商品 itemic token。","completion":"<|prod_begin|><s_a_101><s_b_202><s_c_303>"}
+

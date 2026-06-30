@@ -43,7 +43,7 @@ fi
 
 python -m pip install -i "${PYPI_INDEX}" \
   "datasets==4.8.4" accelerate peft trl \
-  "ms-swift==4.3.2" "deepspeed==0.19.2" \
+  "ms-swift==4.3.2" "deepspeed==0.19.2" "bitsandbytes==0.49.2" \
   modelscope huggingface_hub sentencepiece protobuf safetensors \
   jsonlines pandas "numpy==1.26.4" "polars-lts-cpu==1.33.1" pyarrow scikit-learn tensorboard pyyaml tqdm pytest
 

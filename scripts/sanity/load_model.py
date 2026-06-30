@@ -8,7 +8,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 ITEMIC_PROBES = [
-    "<|video_begin|><s_a_1234><s_b_5678><s_c_9012>",
+    "<|video_begin|><s_a_1234><s_b_5678><s_c_7012>",
     "<|prod_begin|><s_a_101><s_b_202><s_c_303>",
     "<|ad_begin|><s_a_11><s_b_22><s_c_33>",
     "<|living_begin|><s_a_1><s_b_2><s_c_3>",
@@ -44,4 +44,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

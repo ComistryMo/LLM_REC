@@ -34,5 +34,6 @@ The 512-token continuation contains 6,399 train / 92 validation records. Longer 
 - `pre_submit_check.py`: passed.
 - CPU `AutoTokenizer` and `AutoModelForCausalLM` load: passed.
 - Loaded class: `Qwen3ForCausalLM`; vocabulary size: 176,253; chat template present.
+- The final `config.json` is byte-identical to the official base config (SHA-256 `5fe266426d3f950f5040a9cff724f2250c4a16cb62fac6135be42ed300faebc4`).
 
 This artifact contains the completed material stage followed by 275 protected optimization steps on user/recommendation data. It is a safe baseline, not a claim that the full Stage 2 epoch completed.

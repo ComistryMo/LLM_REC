@@ -37,3 +37,20 @@ The 512-token continuation contains 6,399 train / 92 validation records. Longer 
 - The final `config.json` is byte-identical to the official base config (SHA-256 `5fe266426d3f950f5040a9cff724f2250c4a16cb62fac6135be42ed300faebc4`).
 
 This artifact contains the completed material stage followed by 275 protected optimization steps on user/recommendation data. It is a safe baseline, not a claim that the full Stage 2 epoch completed.
+
+## Full-parameter Stage 2 rerun
+
+GPU 0 later became available with enough headroom, so Stage 2 was rerun as a complete single-GPU full-parameter SFT from the Stage 1 material-merged model.
+
+- Data: 22,443 train / 416 validation records after framework tokenization and truncation checks.
+- Method: 801.4336M trainable parameters (100%), BF16, DeepSpeed ZeRO-2, gradient checkpointing, max length 1,024, batch size 1, gradient accumulation 16.
+- Device: GPU 0 only. GPUs 1-5 were not selected for this run.
+- Result: completed 1,403/1,403 steps (one epoch) in 1h17m59s without OOM or watchdog intervention.
+- Peak model memory reported by Swift: 21.43 GiB.
+- Final train loss: 1.284.
+- Final validation loss: 1.161; validation token accuracy: 0.6891.
+- Training checkpoint: `outputs/swift_full_stage2_user_rec_1k_gpu0/v0-20260701-093202/checkpoint-1403`.
+- Submission model: `/data/hz/models/OneReason-0.8B-stage2-user-rec-full-1k`.
+- Submission model passed `pre_submit_check.py` and CPU loading; its `config.json` is byte-identical to the official base config.
+
+This full-parameter model supersedes the earlier protected QLoRA baseline for evaluation.

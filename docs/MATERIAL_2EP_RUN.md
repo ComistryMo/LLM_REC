@@ -21,7 +21,7 @@ EP1 contains 675,097 `/think` records and 5,190 old official `/no_think` records
 
 ## Active configuration
 
-- Physical device: GPU 0 only.
+- Physical device: one explicitly selected GPU (`PHYSICAL_GPU`, initially GPU 0).
 - Model: `/data/hz/models/OneReason-0.8B-pretrain-competition`.
 - Method: full-parameter BF16 SFT, DeepSpeed ZeRO-2, gradient checkpointing.
 - Max length: 1,024.
@@ -36,6 +36,8 @@ EP1 contains 675,097 `/think` records and 5,190 old official `/no_think` records
 - Memory watchdog: GPU 0, 8,000 MiB minimum free memory.
 
 The batch-16 smoke test reported 22.18 GiB peak model memory. The first production interval reported about 24.7 GiB and successfully wrote `checkpoint-1000` with model, Trainer, scheduler, RNG, and DeepSpeed optimizer state.
+
+The first GPU 0 run was later stopped by the memory watchdog after a co-located workload grew. Training was resumed from the complete EP1 `checkpoint-4000` on physical GPU 3 with batch size 2 and gradient accumulation 8 (effective batch 16). GPU selection is explicit through matching `PHYSICAL_GPU` and `CUDA_VISIBLE_DEVICES` values.
 
 ## Recovery
 

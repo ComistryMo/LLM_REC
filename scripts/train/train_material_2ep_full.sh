@@ -5,7 +5,8 @@ ROOT="${ROOT:-/data/hz/llmrec_competition}"
 MODEL_PATH="${MODEL_PATH:-/data/hz/models/OneReason-0.8B-pretrain-competition}"
 DATA_ROOT="${DATA_ROOT:-/data/hz/onereason_competition/data/material_2ep/swift_messages_v2}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${ROOT}/outputs/material_2ep_allfull_gpu0}"
-CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
+PHYSICAL_GPU="${PHYSICAL_GPU:-0}"
+CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-${PHYSICAL_GPU}}"
 MAX_LENGTH="${MAX_LENGTH:-1024}"
 BATCH_SIZE="${BATCH_SIZE:-16}"
 GRAD_ACCUM="${GRAD_ACCUM:-1}"
@@ -19,8 +20,8 @@ RUN_STAGE="${RUN_STAGE:-both}"
 EP1_RESUME="${EP1_RESUME:-}"
 EP2_RESUME="${EP2_RESUME:-}"
 
-if [[ "${CUDA_VISIBLE_DEVICES}" != "0" ]]; then
-  echo "This run is restricted to physical GPU 0; got CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}." >&2
+if [[ ! "${PHYSICAL_GPU}" =~ ^[0-9]+$ || "${CUDA_VISIBLE_DEVICES}" != "${PHYSICAL_GPU}" ]]; then
+  echo "Specify exactly one physical GPU with matching PHYSICAL_GPU and CUDA_VISIBLE_DEVICES." >&2
   exit 2
 fi
 if [[ "${RUN_STAGE}" != "both" && "${RUN_STAGE}" != "ep1" && "${RUN_STAGE}" != "ep2" ]]; then

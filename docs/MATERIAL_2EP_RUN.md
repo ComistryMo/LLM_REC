@@ -30,6 +30,7 @@ EP1 contains 675,097 `/think` records and 5,190 old official `/no_think` records
 - One epoch per stage; EP2 starts from the final EP1 full checkpoint.
 - Save and evaluate every 1,000 optimizer steps.
 - `save_total_limit=2`.
+- `checkpoint_retention.py` also enforces the two-checkpoint limit across Swift `v0/v1/...` directories after resumes.
 - Output root: `outputs/material_2ep_allfull_gpu0`.
 - Main log: `logs/train_material_2ep_allfull_gpu0.log`.
 - Memory watchdog: GPU 0, 8,000 MiB minimum free memory.

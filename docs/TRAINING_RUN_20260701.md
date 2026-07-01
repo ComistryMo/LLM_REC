@@ -54,3 +54,20 @@ GPU 0 later became available with enough headroom, so Stage 2 was rerun as a com
 - Submission model passed `pre_submit_check.py` and CPU loading; its `config.json` is byte-identical to the official base config.
 
 This full-parameter model supersedes the earlier protected QLoRA baseline for evaluation.
+
+## All-full rerun: two material epochs
+
+A second clean lineage was trained without LoRA or QLoRA at any stage:
+
+```text
+official base -> material full SFT epoch 1 -> material full SFT epoch 2 -> user/rec full SFT epoch 1
+```
+
+- Device: GPU 0 only; BF16, DeepSpeed ZeRO-2, gradient checkpointing.
+- Material epoch 1: batch 4, gradient accumulation 4, 636/636 steps, peak 21.61 GiB, train loss 1.901, validation loss 1.567, validation token accuracy 0.5721.
+- Material epoch 2: batch 4, gradient accumulation 4, 636/636 steps, peak 21.61 GiB, train loss 1.586, validation loss 1.570, validation token accuracy 0.5732.
+- User/rec epoch: batch 2, gradient accumulation 8, 1,403/1,403 steps, peak 22.36 GiB, train loss 1.286, validation loss 1.160, validation token accuracy 0.6891.
+- No CUDA OOM occurred and the 8 GiB process watchdog did not intervene.
+- Final checkpoint: `outputs/swift_allfull_v2_stage2_user_rec_gpu0/v0-20260701-122054/checkpoint-1403`.
+- Submission model: `/data/hz/models/OneReason-0.8B-allfull-material2-userrec1-1k`.
+- Submission checks and CPU loading passed; the final `config.json` is byte-identical to the official base config.

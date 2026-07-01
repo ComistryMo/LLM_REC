@@ -18,8 +18,10 @@ ATTN_IMPL="${ATTN_IMPL:-sdpa}"
 MAX_STEPS="${MAX_STEPS:-}"
 SAVE_STEPS="${SAVE_STEPS:-200}"
 EVAL_STEPS="${EVAL_STEPS:-200}"
+SAVE_TOTAL_LIMIT="${SAVE_TOTAL_LIMIT:-2}"
 REPORT_TO="${REPORT_TO:-tensorboard}"
 DATASET_NUM_PROC="${DATASET_NUM_PROC:-4}"
+RESUME_FROM_CHECKPOINT="${RESUME_FROM_CHECKPOINT:-}"
 export NPROC_PER_NODE="${NPROC_PER_NODE:-1}"
 export MASTER_PORT="${MASTER_PORT:-29500}"
 
@@ -52,13 +54,16 @@ ARGS=(
   --eval_steps "${EVAL_STEPS}"
   --save_strategy steps
   --save_steps "${SAVE_STEPS}"
-  --save_total_limit 2
+  --save_total_limit "${SAVE_TOTAL_LIMIT}"
   --logging_steps 5
   --report_to "${REPORT_TO}"
   --dataset_num_proc "${DATASET_NUM_PROC}"
   --dataloader_num_workers 0
 )
 if [[ -n "${MAX_STEPS}" ]]; then ARGS+=(--max_steps "${MAX_STEPS}"); fi
+if [[ -n "${RESUME_FROM_CHECKPOINT}" ]]; then
+  ARGS+=(--resume_from_checkpoint "${RESUME_FROM_CHECKPOINT}")
+fi
 
 printf '%q ' swift "${ARGS[@]}" | tee "${ROOT}/logs/train_swift_full_cmd.log"
 echo

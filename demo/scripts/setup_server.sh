@@ -26,11 +26,27 @@ else
 fi
 
 echo "[run] ensure PyTorch 2.7.1 cu126 runtime dependencies"
-uv pip install --python "$VENV/bin/python" --reinstall \
-  --default-index "$UV_INDEX_URL" \
-  --index https://download.pytorch.org/whl/cu126 \
-  --index-strategy unsafe-best-match \
+uv pip install --python "$VENV/bin/python" --no-deps \
+  --default-index https://download.pytorch.org/whl/cu126 \
   "torch==2.7.1+cu126" "torchvision==0.22.1+cu126" "torchaudio==2.7.1+cu126"
+
+uv pip install --python "$VENV/bin/python" --no-deps \
+  "sympy==1.13.3" \
+  "nvidia-cuda-nvrtc-cu12==12.6.77" \
+  "nvidia-cuda-runtime-cu12==12.6.77" \
+  "nvidia-cuda-cupti-cu12==12.6.80" \
+  "nvidia-cudnn-cu12==9.5.1.17" \
+  "nvidia-cublas-cu12==12.6.4.1" \
+  "nvidia-cufft-cu12==11.3.0.4" \
+  "nvidia-curand-cu12==10.3.7.77" \
+  "nvidia-cusolver-cu12==11.7.1.2" \
+  "nvidia-cusparse-cu12==12.5.4.2" \
+  "nvidia-cusparselt-cu12==0.6.3" \
+  "nvidia-nccl-cu12==2.26.2" \
+  "nvidia-nvtx-cu12==12.6.77" \
+  "nvidia-nvjitlink-cu12==12.6.85" \
+  "nvidia-cufile-cu12==1.11.1.6" \
+  "triton==3.3.1"
 
 uv pip install --python "$VENV/bin/python" "numpy==1.26.4" "tensorboard"
 
@@ -42,6 +58,7 @@ fi
 EXPECTED_FLASH_SHA256=22013b8c74a63fc70e69be1e10ff02e4ad8fec84a43600bdca67b434ed417113
 echo "$EXPECTED_FLASH_SHA256  $FLASH_WHEEL" | sha256sum --check
 uv pip install --python "$VENV/bin/python" --no-deps "$FLASH_WHEEL"
+uv pip check --python "$VENV/bin/python"
 
 FA_PY="$VENV/lib/python3.11/site-packages/transformers/integrations/flash_attention.py"
 if ! grep -q "s_aux=s_aux.to(query.dtype) if s_aux is not None else None" "$FA_PY"; then

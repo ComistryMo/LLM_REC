@@ -62,10 +62,14 @@ def prepare_examples(path: Path, tokenizer: Any, max_length: int) -> tuple[list[
     return examples, stats
 
 
-def evaluate(model_path: str, examples: list[dict[str, Any]], tokenizer: Any, device: str, batch_size: int) -> dict[str, Any]:
-    model = AutoModelForCausalLM.from_pretrained(
-        model_path, trust_remote_code=True, dtype=torch.bfloat16, attn_implementation="sdpa"
-    ).to(device).eval()
+def evaluate_loaded_model(
+    model: Any,
+    model_name: str,
+    examples: list[dict[str, Any]],
+    tokenizer: Any,
+    device: str,
+    batch_size: int,
+) -> dict[str, Any]:
     totals = {name: {"nll": 0.0, "top1": 0, "top5": 0} for name in POSITIONS}
     full_exact = abc_exact = abc_top5_exact = 0
 
@@ -109,7 +113,7 @@ def evaluate(model_path: str, examples: list[dict[str, Any]], tokenizer: Any, de
         for name in POSITIONS
     }
     result = {
-        "model": model_path,
+        "model": model_name,
         "samples": count,
         "positions": positions_result,
         "abc_loss": sum(totals[name]["nll"] for name in POSITIONS[1:]) / (3 * count),
@@ -119,6 +123,14 @@ def evaluate(model_path: str, examples: list[dict[str, Any]], tokenizer: Any, de
         "abc_top5_exact_rate": abc_top5_exact / count,
         "full_exact_rate": full_exact / count,
     }
+    return result
+
+
+def evaluate(model_path: str, examples: list[dict[str, Any]], tokenizer: Any, device: str, batch_size: int) -> dict[str, Any]:
+    model = AutoModelForCausalLM.from_pretrained(
+        model_path, trust_remote_code=True, dtype=torch.bfloat16, attn_implementation="sdpa"
+    ).to(device).eval()
+    result = evaluate_loaded_model(model, model_path, examples, tokenizer, device, batch_size)
     del model
     gc.collect()
     if torch.cuda.is_available():

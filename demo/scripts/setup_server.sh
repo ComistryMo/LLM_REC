@@ -2,9 +2,13 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
+exec > >(tee -a demo/setup_server.log) 2>&1
+
 BOOTSTRAP=demo/.bootstrap
 BOOTSTRAP_PYTHON=${BOOTSTRAP_PYTHON:-/data/conda/envs/onereason-rec/bin/python}
 export UV_CACHE_DIR=${UV_CACHE_DIR:-"$PWD/demo/.uv-cache"}
+export UV_DEFAULT_INDEX=${UV_DEFAULT_INDEX:-https://pypi.tuna.tsinghua.edu.cn/simple}
+export UV_INDEX_URL=${UV_INDEX_URL:-$UV_DEFAULT_INDEX}
 
 if ! command -v uv >/dev/null 2>&1; then
   if [[ ! -x "$BOOTSTRAP/bin/uv" ]]; then

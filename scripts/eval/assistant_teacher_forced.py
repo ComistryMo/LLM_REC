@@ -31,6 +31,18 @@ def stable_key(record: dict[str, Any]) -> str:
     return hashlib.sha256(value.encode()).hexdigest()
 
 
+def evaluation_messages(record: dict[str, Any]) -> list[dict[str, str]]:
+    if isinstance(record.get("messages"), list):
+        return messages_from_record(record)
+    instruction = str(record.get("instruction", "")).strip()
+    query = str(record.get("input", "")).strip()
+    response = str(record.get("output", "")).strip()
+    prompt = "\n\n".join(part for part in (instruction, query) if part)
+    if not prompt or not response:
+        raise ValueError("record has neither messages nor a usable Alpaca triplet")
+    return [{"role": "user", "content": prompt}, {"role": "assistant", "content": response}]
+
+
 def prepare_examples(
     path: Path, tokenizer: Any, max_length: int, max_per_task: int
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -46,7 +58,11 @@ def prepare_examples(
         selected = sorted(records, key=stable_key)[:max_per_task]
         used = 0
         for record in selected:
-            messages = messages_from_record(record)
+            try:
+                messages = evaluation_messages(record)
+            except ValueError:
+                stats["skipped"] += 1
+                continue
             if not messages or messages[-1].get("role") != "assistant" or not messages[-1].get("content"):
                 stats["skipped"] += 1
                 continue

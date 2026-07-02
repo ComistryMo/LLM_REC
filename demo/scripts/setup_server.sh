@@ -7,8 +7,7 @@ exec > >(tee -a demo/setup_server.log) 2>&1
 BOOTSTRAP=demo/.bootstrap
 BOOTSTRAP_PYTHON=${BOOTSTRAP_PYTHON:-/data/conda/envs/onereason-rec/bin/python}
 export UV_CACHE_DIR=${UV_CACHE_DIR:-"$PWD/demo/.uv-cache"}
-export UV_DEFAULT_INDEX=${UV_DEFAULT_INDEX:-https://pypi.tuna.tsinghua.edu.cn/simple}
-export UV_INDEX_URL=${UV_INDEX_URL:-$UV_DEFAULT_INDEX}
+export UV_INDEX_URL=${UV_INDEX_URL:-https://pypi.tuna.tsinghua.edu.cn/simple}
 
 if ! command -v uv >/dev/null 2>&1; then
   if [[ ! -x "$BOOTSTRAP/bin/uv" ]]; then
@@ -20,6 +19,7 @@ if ! command -v uv >/dev/null 2>&1; then
 fi
 
 bash demo/scripts/00_install.sh
+uv pip install --python demo/LLaMA-Factory/.venv/bin/python "numpy==1.26.4"
 demo/LLaMA-Factory/.venv/bin/python demo/scripts/02_register_dataset.py
 
 {
@@ -28,12 +28,14 @@ demo/LLaMA-Factory/.venv/bin/python demo/scripts/02_register_dataset.py
   demo/LLaMA-Factory/.venv/bin/python - <<'PY'
 from importlib.metadata import version
 import flash_attn
+import numpy
 import torch
 import transformers
 
 print(f"python_environment=demo/LLaMA-Factory/.venv")
 print(f"torch={torch.__version__}")
 print(f"torch_cuda={torch.version.cuda}")
+print(f"numpy={numpy.__version__}")
 print(f"transformers={transformers.__version__}")
 print(f"llamafactory={version('llamafactory')}")
 print(f"flash_attn={flash_attn.__version__}")

@@ -26,8 +26,10 @@ else
 fi
 
 echo "[run] ensure PyTorch 2.7.1 cu126 runtime dependencies"
-env -u UV_INDEX_URL uv pip install --python "$VENV/bin/python" --reinstall \
-  --default-index https://download.pytorch.org/whl/cu126 \
+uv pip install --python "$VENV/bin/python" --reinstall \
+  --default-index "$UV_INDEX_URL" \
+  --index https://download.pytorch.org/whl/cu126 \
+  --index-strategy unsafe-best-match \
   "torch==2.7.1+cu126" "torchvision==0.22.1+cu126" "torchaudio==2.7.1+cu126"
 
 uv pip install --python "$VENV/bin/python" "numpy==1.26.4" "tensorboard"

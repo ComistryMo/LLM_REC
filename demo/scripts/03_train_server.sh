@@ -5,6 +5,7 @@ cd "$(dirname "$0")/../.."
 GPU_ID=${GPU_ID:-3}
 CONFIG=${CONFIG:-demo/config/server_a100.yaml}
 MIN_FREE_MIB=${MIN_FREE_MIB:-60000}
+LOG=${LOG:-demo/output/train_server_$(date +%Y%m%d_%H%M%S).log}
 VENV=demo/LLaMA-Factory/.venv
 
 if [[ ! -x "$VENV/bin/llamafactory-cli" ]]; then
@@ -26,5 +27,7 @@ export CUDA_VISIBLE_DEVICES=$GPU_ID
 export TOKENIZERS_PARALLELISM=false
 export WANDB_DISABLED=1
 
+mkdir -p demo/output
 echo "[run] GPU=$GPU_ID free=${FREE_MIB}MiB config=$CONFIG"
-exec "$VENV/bin/llamafactory-cli" train "$CONFIG"
+echo "[run] log=$LOG"
+"$VENV/bin/llamafactory-cli" train "$CONFIG" 2>&1 | tee "$LOG"

@@ -42,6 +42,7 @@ demo/output/
 demo/flash_install.log
 demo/server_environment.txt
 demo/data/server_*.jsonl
+demo/data/competition_full.jsonl
 demo/data/convert_summary.json
 demo/data/convert_filter.log
 demo/baseline-data/**/*.jsonl

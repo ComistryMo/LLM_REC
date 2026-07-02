@@ -10,7 +10,7 @@ finetuning_type: full
 enable_liger_kernel: true
 
 ### dataset
-dataset: server_data_final
+dataset: competition_full
 dataset_dir: demo/LLaMA-Factory/data
 template: qwen3_nothink
 cutoff_len: 32768

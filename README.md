@@ -42,6 +42,10 @@ GPU_ID=3 CONFIG=demo/config/server_smoke.yaml \
 INPUT=/path/to/downloaded/jsonl \
   bash demo/scripts/prepare_server_data.sh
 
+# parquet 目录会自动使用官方 convertv2.py
+INPUT=/path/to/baseline_data \
+  bash demo/scripts/prepare_server_data.sh
+
 # 正式 32K 全参 baseline
 GPU_ID=3 CONFIG=demo/config/server_a100.yaml \
   bash demo/scripts/03_train_server.sh

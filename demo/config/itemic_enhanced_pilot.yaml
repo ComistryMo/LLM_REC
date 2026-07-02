@@ -1,0 +1,43 @@
+### model
+model_name_or_path: /data/hz/models/OneReason-0.8B-allfull-material2-userrec1-1k
+trust_remote_code: true
+flash_attn: fa2
+
+### method
+stage: sft
+do_train: true
+finetuning_type: full
+enable_liger_kernel: true
+
+### dataset
+dataset: itemic_enhanced_pilot
+dataset_dir: demo/LLaMA-Factory/data
+template: qwen3_nothink
+cutoff_len: 1024
+packing: true
+neat_packing: true
+overwrite_cache: true
+preprocessing_num_workers: 2
+dataloader_num_workers: 2
+
+### output
+output_dir: demo/output/itemic_enhanced_pilot
+logging_steps: 10
+save_strategy: 'no'
+plot_loss: true
+overwrite_output_dir: true
+save_only_model: true
+report_to: tensorboard
+logging_dir: demo/output/itemic_enhanced_pilot/tb
+
+### train
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 4
+learning_rate: 3.0e-7
+max_steps: 300
+lr_scheduler_type: cosine
+warmup_ratio: 0.03
+weight_decay: 0.0
+bf16: true
+pure_bf16: true
+seed: 20260702

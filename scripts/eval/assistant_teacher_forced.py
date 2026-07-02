@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import gc
 import hashlib
+import heapq
 import json
 import math
 from collections import defaultdict
@@ -46,16 +47,26 @@ def evaluation_messages(record: dict[str, Any]) -> list[dict[str, str]]:
 def prepare_examples(
     path: Path, tokenizer: Any, max_length: int, max_per_task: int
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    groups: dict[str, list[tuple[int, int, dict[str, Any]]]] = defaultdict(list)
+    available: dict[str, int] = defaultdict(int)
+    rows = 0
     with path.open(encoding="utf-8") as stream:
         for line in stream:
             record = json.loads(line)
-            groups[str(record.get("task_type", "unknown"))].append(record)
+            task = str(record.get("task_type", "unknown"))
+            available[task] += 1
+            rows += 1
+            key = int(stable_key(record), 16)
+            entry = (-key, rows, record)
+            if len(groups[task]) < max_per_task:
+                heapq.heappush(groups[task], entry)
+            elif key < -groups[task][0][0]:
+                heapq.heapreplace(groups[task], entry)
 
     examples = []
-    stats: dict[str, Any] = {"rows": sum(map(len, groups.values())), "tasks": {}, "skipped": 0}
-    for task, records in sorted(groups.items()):
-        selected = sorted(records, key=stable_key)[:max_per_task]
+    stats: dict[str, Any] = {"rows": rows, "tasks": {}, "skipped": 0}
+    for task, heap in sorted(groups.items()):
+        selected = [entry[2] for entry in sorted(heap, key=lambda entry: -entry[0])]
         used = 0
         for record in selected:
             try:
@@ -81,7 +92,7 @@ def prepare_examples(
                 continue
             examples.append({"ids": full, "start": prefix, "task": task})
             used += 1
-        stats["tasks"][task] = {"available": len(records), "selected": len(selected), "usable": used}
+        stats["tasks"][task] = {"available": available[task], "selected": len(selected), "usable": used}
     return examples, stats
 
 

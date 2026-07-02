@@ -4,6 +4,7 @@
 - Dataset revision at download: `8b88c769d74801df49d41e47cb8653b90cbe1015`
 - Downloaded: `2026-07-02`
 - Official framework: LLaMA-Factory `0.9.6.dev0`
+- Official FlashAttention wheel SHA256: `22013b8c74a63fc70e69be1e10ff02e4ad8fec84a43600bdca67b434ed417113`
 
 The files originally published under `demo/` are retained unchanged. Server-specific
 configuration is additive:

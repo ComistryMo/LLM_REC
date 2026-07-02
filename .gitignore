@@ -37,6 +37,7 @@ dataset.tar.gz
 demo/LLaMA-Factory/
 demo/.bootstrap/
 demo/.uv-cache/
+demo/wheels/
 demo/output/
 demo/flash_install.log
 demo/server_environment.txt

@@ -2,6 +2,19 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
+BOOTSTRAP=demo/.bootstrap
+BOOTSTRAP_PYTHON=${BOOTSTRAP_PYTHON:-/data/conda/envs/onereason-rec/bin/python}
+export UV_CACHE_DIR=${UV_CACHE_DIR:-"$PWD/demo/.uv-cache"}
+
+if ! command -v uv >/dev/null 2>&1; then
+  if [[ ! -x "$BOOTSTRAP/bin/uv" ]]; then
+    echo "[run] bootstrap project-local uv"
+    "$BOOTSTRAP_PYTHON" -m venv "$BOOTSTRAP"
+    "$BOOTSTRAP/bin/python" -m pip install --disable-pip-version-check "uv==0.8.22"
+  fi
+  export PATH="$PWD/$BOOTSTRAP/bin:$PATH"
+fi
+
 bash demo/scripts/00_install.sh
 demo/LLaMA-Factory/.venv/bin/python demo/scripts/02_register_dataset.py
 
@@ -24,4 +37,5 @@ print(f"liger_kernel={version('liger-kernel')}")
 PY
 } > demo/server_environment.txt
 
+uv cache clean >/dev/null
 echo "[ok] server environment recorded in demo/server_environment.txt"

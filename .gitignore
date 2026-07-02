@@ -35,6 +35,8 @@ dataset.tar.gz
 
 # Official LLaMA-Factory baseline runtime and full competition data.
 demo/LLaMA-Factory/
+demo/.bootstrap/
+demo/.uv-cache/
 demo/output/
 demo/flash_install.log
 demo/server_environment.txt

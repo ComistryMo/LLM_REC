@@ -91,6 +91,21 @@ PY
 - Model load test：passed, `Qwen3ForCausalLM` + `Qwen2Tokenizer`, chat template present.
 - ms-swift LoRA smoke：passed，最长实测 6,714 token。
 
+### 官方 LLaMA-Factory baseline 环境
+
+路径：`/data/hz/llmrec_competition/demo/LLaMA-Factory/.venv`
+
+- Python：`3.11.13`
+- PyTorch：`2.7.1+cu126`
+- Transformers：`5.6.0`
+- LLaMA-Factory：`0.9.6.dev0`
+- FlashAttention：`2.7.4.post1`
+- Liger Kernel：`0.8.0`
+- NumPy：`1.26.4`
+- 测试补充工具：`pip 24.0`、`pytest 9.1.1`
+
+2026-07-02 仅补充了测试工具，未修改训练核心包。该环境已完成 300-step 全参 pilot、模型插值评估和候选模型加载。
+
 ## 环境检查项
 
 `scripts/setup/check_env.sh` 会记录：

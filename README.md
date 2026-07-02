@@ -145,6 +145,19 @@ bash scripts/export/export_swift_lora.sh
 python scripts/export/pre_submit_check.py --model-dir outputs/export_swift_lora_v1
 ```
 
+## Itemic 修复实验
+
+2026-07-02 的定位实验表明，现有全参 SFT 提升了 domain/格式能力，但损伤了 a/b/c SID。短程 direct、SID-only 和分层数据重配效果有限；全参数插值提供了更稳定的折中候选：
+
+```text
+/data/hz/models/OneReason-0.8B-base10-allfull90
+candidate = 0.10 * base + 0.90 * allfull
+```
+
+该候选已通过模型加载、结构和提交目录检查。完整指标、限制和复现命令见 `docs/ITEMIC_EXPERIMENTS_20260702.md`。
+
+官方 General 数据已用低内存流式转换为 152,005 条 JSONL，并注册为 `competition_general`。Pid2Caption、Pid2Sid、Pid2Tag、UserProfile 需要先做 join 和任务构造，不能直接套用官方对话转换器。
+
 ## 注意事项
 
 - 不提交模型权重、原始数据、日志、token、cookie、密码或 `.env`。

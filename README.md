@@ -21,7 +21,34 @@ training/             框架入口说明
 outputs/              训练和导出产物，默认不入 git
 logs/                 环境检查和训练日志，默认不入 git
 tests/                pytest 单元测试
+demo/                 官方 LLaMA-Factory baseline 快照与服务器适配入口
 ```
+
+## 官方 baseline（默认训练入口）
+
+`demo/` 来自官方 Hugging Face 数据集的 demo 目录，原始文件保持不变；服务器适配另放在
+`demo/config/server_*.yaml` 和 `demo/scripts/*_server.*` 中。它使用 LLaMA-Factory 全参 SFT、
+`qwen3_nothink`、32K cutoff、packing、FlashAttention-2 和 Liger Kernel。
+
+```bash
+cd /data/hz/llmrec_competition
+bash demo/scripts/setup_server.sh
+
+# 10 条官方 demo 数据 smoke test，默认使用 GPU 3
+GPU_ID=3 CONFIG=demo/config/server_smoke.yaml \
+  bash demo/scripts/03_train_server.sh
+
+# 完整官方数据转换与注册
+INPUT=/path/to/downloaded/jsonl \
+  bash demo/scripts/prepare_server_data.sh
+
+# 正式 32K 全参 baseline
+GPU_ID=3 CONFIG=demo/config/server_a100.yaml \
+  bash demo/scripts/03_train_server.sh
+```
+
+官方 demo 仅有 10 条样例，不代表正式训练规模。来源版本和本地适配说明见
+`demo/OFFICIAL_REVISION.md`。
 
 ## 快速开始
 

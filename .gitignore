@@ -32,3 +32,15 @@ dataset.tar.gz
 !models/README.md
 !logs/.gitkeep
 !outputs/.gitkeep
+
+# Official LLaMA-Factory baseline runtime and full competition data.
+demo/LLaMA-Factory/
+demo/output/
+demo/flash_install.log
+demo/server_environment.txt
+demo/data/server_*.jsonl
+demo/data/convert_summary.json
+demo/data/convert_filter.log
+demo/baseline-data/**/*.jsonl
+demo/baseline-data/**/*.parquet
+!demo/baseline-data/baseline_data/sampled/sampled.parquet

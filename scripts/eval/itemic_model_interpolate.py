@@ -29,6 +29,8 @@ def main() -> None:
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--max-length", type=int, default=1024)
+    parser.add_argument("--save-alpha", type=float)
+    parser.add_argument("--save-directory", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
@@ -64,6 +66,11 @@ def main() -> None:
                 model, f"base+{alpha:g}*(tuned-base)", examples, tokenizer, args.device, args.batch_size
             )
             print(name, json.dumps(results[name], ensure_ascii=False), flush=True)
+            if args.save_alpha is not None and abs(alpha - args.save_alpha) < 1e-12:
+                if args.save_directory is None:
+                    raise SystemExit("--save-directory is required with --save-alpha")
+                model.save_pretrained(args.save_directory, safe_serialization=True)
+                tokenizer.save_pretrained(args.save_directory)
 
     payload = {
         "base": args.base,
